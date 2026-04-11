@@ -1,51 +1,50 @@
-# playbooks/linux-hardening.yml
 - name: Linux Server Hardening
   hosts: linux
-  become: yes
+  become: true
   tasks:
 
     - name: Update all packages
-      apt:
+      ansible.builtin.apt:
         upgrade: dist
-        update_cache: yes
+        update_cache: true
 
     - name: Set timezone to UTC
-      timezone:
+      community.general.timezone:
         name: UTC
 
     - name: Install common tools
-      apt:
+      ansible.builtin.apt:
         name: [htop, curl, git, net-tools, unzip, fail2ban]
         state: present
 
-    - name: Enable UFW and allow SSH
-      ufw:
+    - name: Enable UFW and allow ports
+      community.general.ufw:
         rule: allow
         port: "{{ item }}"
         proto: tcp
-      loop: [22, 80, 443, 3000, 9090, 9093, 9100, 5000]
+      loop: ["22", "80", "443", "3000", "9090", "9093", "9100", "5000"]
 
     - name: Enable UFW
-      ufw:
+      community.general.ufw:
         state: enabled
         policy: deny
         direction: incoming
 
     - name: Disable SSH password authentication
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^PasswordAuthentication'
         line: 'PasswordAuthentication no'
       notify: Restart SSH
 
     - name: Configure fail2ban
-      service:
+      ansible.builtin.service:
         name: fail2ban
         state: started
-        enabled: yes
+        enabled: true
 
   handlers:
     - name: Restart SSH
-      service:
-        name: ssh
+      ansible.builtin.service:
+        name: sshd
         state: restarted

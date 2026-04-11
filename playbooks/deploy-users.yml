@@ -1,24 +1,24 @@
 - name: Deploy Users on Linux
   hosts: linux
-  become: yes
+  become: true
   tasks:
 
     - name: Create devops group
-      group:
+      ansible.builtin.group:
         name: devops
         state: present
 
     - name: Create devops user
-      user:
+      ansible.builtin.user:
         name: devopsuser
         group: devops
         shell: /bin/bash
-        create_home: yes
+        create_home: true
         state: present
 
     - name: Add devopsuser to sudoers
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/sudoers.d/devopsuser
         line: 'devopsuser ALL=(ALL) NOPASSWD:ALL'
-        create: yes
+        create: true
         mode: '0440'
