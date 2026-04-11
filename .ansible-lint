@@ -1,7 +1,0 @@
-skip_list:
-  - syntax-check
-  - name[play]
-
-exclude_paths:
-  - playbooks/windows-setup.yml
-  - playbooks/site.yml
