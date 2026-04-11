@@ -1,0 +1,7 @@
+# inventory/hosts.ini
+[linux]
+#linux_vps ansible_host=151.247.172.15 ansible_user=root ansible_connection=ssh
+localhost ansible_connection=local
+
+[windows]
+windows_vps ansible_host=173.248.136.194 ansible_user=Administrator ansible_password=I83~dh$dnQAY6#d^7 ansible_connection=winrm ansible_winrm_transport=ntlm ansible_port=5985 ansible_winrm_scheme=http ansible_winrm_server_cert_validation=ignore

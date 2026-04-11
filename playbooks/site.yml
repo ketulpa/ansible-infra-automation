@@ -1,0 +1,4 @@
+# playbooks/site.yml — runs everything
+- import_playbook: linux-hardening.yml
+- import_playbook: windows-setup.yml
+- import_playbook: deploy-users.yml

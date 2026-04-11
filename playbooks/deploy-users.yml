@@ -1,0 +1,24 @@
+- name: Deploy Users on Linux
+  hosts: linux
+  become: yes
+  tasks:
+
+    - name: Create devops group
+      group:
+        name: devops
+        state: present
+
+    - name: Create devops user
+      user:
+        name: devopsuser
+        group: devops
+        shell: /bin/bash
+        create_home: yes
+        state: present
+
+    - name: Add devopsuser to sudoers
+      lineinfile:
+        path: /etc/sudoers.d/devopsuser
+        line: 'devopsuser ALL=(ALL) NOPASSWD:ALL'
+        create: yes
+        mode: '0440'

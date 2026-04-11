@@ -1,0 +1,51 @@
+# playbooks/linux-hardening.yml
+- name: Linux Server Hardening
+  hosts: linux
+  become: yes
+  tasks:
+
+    - name: Update all packages
+      apt:
+        upgrade: dist
+        update_cache: yes
+
+    - name: Set timezone to UTC
+      timezone:
+        name: UTC
+
+    - name: Install common tools
+      apt:
+        name: [htop, curl, git, net-tools, unzip, fail2ban]
+        state: present
+
+    - name: Enable UFW and allow SSH
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop: [22, 80, 443, 3000, 9090, 9093, 9100, 5000]
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    - name: Disable SSH password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+      notify: Restart SSH
+
+    - name: Configure fail2ban
+      service:
+        name: fail2ban
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

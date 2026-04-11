@@ -1,0 +1,42 @@
+# playbooks/windows-setup.yml
+- name: Windows Server Base Configuration
+  hosts: windows
+  vars_files:
+    - ../vault/secrets.yml
+  tasks:
+
+    - name: Install Windows features
+      win_feature:
+        name: [Web-Server, Telnet-Client]
+        state: present
+
+    - name: Set timezone to UTC
+      win_timezone:
+        timezone: UTC
+
+    - name: Create a local admin user
+      win_user:
+        name: devopsuser
+        password: "{{ win_user_password }}"
+        state: present
+        groups: Administrators
+
+    - name: Ensure Windows Firewall allows RDP
+      win_firewall_rule:
+        name: RDP
+        localport: 3389
+        action: allow
+        direction: in
+        protocol: tcp
+        state: present
+        enabled: yes
+
+    - name: Install Chocolatey
+      win_chocolatey:
+        name: chocolatey
+        state: present
+
+    - name: Install tools via Chocolatey
+      win_chocolatey:
+        name: [notepadplusplus, 7zip, git]
+        state: present
