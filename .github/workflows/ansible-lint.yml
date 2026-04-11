@@ -11,12 +11,5 @@ jobs:
       - name: Install Ansible and lint
         run: pip install ansible ansible-lint
 
-      - name: Install required collections
-        run: |
-          ansible-galaxy collection install community.general
-          ansible-galaxy collection install ansible.windows
-          ansible-galaxy collection install community.windows
-          ansible-galaxy collection install chocolatey.chocolatey
-
       - name: Run ansible-lint
         run: ansible-lint playbooks/linux-hardening.yml playbooks/deploy-users.yml
